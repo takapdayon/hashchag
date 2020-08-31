@@ -1,6 +1,9 @@
 from discord.ext import commands
+from Util import *
 import traceback
+import Constant
 import Settings
+import discord
 
 TOKEN = Settings.TOKEN
 INITIAL_EXTENSIONS = [
@@ -24,6 +27,16 @@ class Main(commands.Bot):
         print(self.user.id)
         print('-----')
 
+    async def on_guild_join(self, guild):
+
+        await guild.create_category(name=Constant.APP_NAME)
+        #if (True):
+        #   await guild.create_category(name="HashChag")
+
+    async def on_guild_remove(self, guild):
+        print("category削除")
+        await guild.create_category(name=Constant.APP_NAME)
+
 if __name__ == '__main__':
-    bot = Main(command_prefix='!')
+    bot = Main(command_prefix='#!')
     bot.run(TOKEN)
