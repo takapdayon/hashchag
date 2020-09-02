@@ -1,5 +1,5 @@
 import discord
-
+import Constant
 
 def deleteCategory():
     print("カテゴリ削除")
@@ -25,3 +25,11 @@ def showHashTags():
 def showGlobalHashTags():
     print("ハッシュタグ一覧")
 
+def checkparent():
+    print("親カテゴリーがhashchagかどうか")
+
+def getHashChagCategory(categories):
+    for category in categories:
+        if category.name == Constant.APP_NAME:
+            return category
+    return None

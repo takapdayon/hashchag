@@ -28,7 +28,7 @@ class Main(commands.Bot):
         print('-----')
 
     async def on_guild_join(self, guild):
-
+        print(type(guild))
         await guild.create_category(name=Constant.APP_NAME)
         #if (True):
         #   await guild.create_category(name="HashChag")

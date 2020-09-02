@@ -1,6 +1,8 @@
 from discord.ext import commands
+from Util import *
 import discord
 import Constant
+
 
 class HashChagCog(commands.Cog):
 
@@ -10,6 +12,9 @@ class HashChagCog(commands.Cog):
     @commands.command()
     async def me(self, ctx):
         print(self)
+        print(ctx)
+        print(ctx.message)
+        print(ctx.guild)
         await ctx.send('me表示')
 
     @commands.group()
@@ -18,8 +23,15 @@ class HashChagCog(commands.Cog):
             await ctx.send("サブコマンドがない->一覧出してあげよう")
 
     @hshg.command()
-    async def add(self, ctx):
-        await ctx.send("ハッシュタグ登録")
+    async def add(self, ctx, tags):
+        #await ctx.guild.create_text_channel(name=tags, category=Constant.APP_NAME)
+        category = getHashChagCategory(ctx.guild.categories)
+
+        for channel in category.channels:
+            if tags == channel.name:
+                await ctx.send("もうタグは登録してあるにゃ～")
+                return
+        await ctx.guild.create_text_channel(name=tags, category=category)
 
     @hshg.command()
     async def delete(self, ctx):
