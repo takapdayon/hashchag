@@ -11,10 +11,6 @@ class HashChagCog(commands.Cog):
 
     @commands.command()
     async def me(self, ctx):
-        print(self)
-        print(ctx)
-        print(ctx.message)
-        print(ctx.guild)
         await ctx.send('me表示')
 
     @commands.group()
@@ -24,17 +20,18 @@ class HashChagCog(commands.Cog):
 
     @hshg.command()
     async def add(self, ctx, tags):
-        #await ctx.guild.create_text_channel(name=tags, category=Constant.APP_NAME)
         category = getHashChagCategory(ctx.guild.categories)
 
         for channel in category.channels:
             if tags == channel.name:
                 await ctx.send("もうタグは登録してあるにゃ～")
                 return
+        # TODO DBにguild: tagsで登録する
         await ctx.guild.create_text_channel(name=tags, category=category)
 
     @hshg.command()
     async def delete(self, ctx):
+        # TODO DBにguild: tagsを削除
         await ctx.send("ハッシュタグ削除")
 
     @hshg.command()
@@ -44,6 +41,10 @@ class HashChagCog(commands.Cog):
     @hshg.command()
     async def gshow(self, ctx):
         await ctx.send("登録ハッシュタグ一覧")
+
+    @hshg.command()
+    async def ban(self, ctx, id):
+        await ctx.send("ハッシュタグ一覧")
 
 
 def setup(bot):
