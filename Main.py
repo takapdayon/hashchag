@@ -29,13 +29,8 @@ class Main(commands.Bot):
         print('-----')
 
     async def on_guild_join(self, guild):
-        print(type(guild))
-        print(guild.id)
-        print(guild.name)
         connectdb().addGuild(int(guild.id), str(guild.name))
         await guild.create_category(name=Constant.APP_NAME)
-        #if (True):
-        #   await guild.create_category(name="HashChag")
 
     async def on_guild_remove(self, guild):
         print("category削除")

@@ -18,39 +18,72 @@ class Sqlite3():
             """)
             self.db_cursor.execute("""
             CREATE TABLE IF NOT EXISTS bans (
-                id INTEGER PRIMARY KEY,
+                id INTEGER,
                 ban_id INTEGER,
+                PRIMARY KEY(id, ban_id),
                 foreign key (id) references guilds(id))
             """)
             self.db_cursor.execute("""
             CREATE TABLE IF NOT EXISTS tags (
-                id INTEGER PRIMARY KEY,
+                id INTEGER,
                 name TEXT,
+                PRIMARY KEY(id, name),
                 foreign key (id) references guilds(id))
             """)
         except sqlite3.Error as e:
             print(e.args[0])
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.dbcommit()
-        self.db.connection.close()
+    def __del__(self):
+        self.db.commit()
+        self.db.close()
 
+
+    def exception(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except Exception as e:
+                print(e.args[0])
+        return wrapper
+
+    @exception
     def addGuild(self, id, name):
         #DBにguild追加
-        self.db_cursor.execute(f"INSERT INTO tags VALUES ({id}, '{name}')")
+        self.db_cursor.execute(f"INSERT INTO guilds VALUES ({id}, '{name}')")
 
-    def addban(self, id, ban_id):
+    @exception
+    def addBan(self, id, ban_id):
         #DBにguild指定のBANguild追加
-        self.db_cursor.execute(f"INSERT INTO tags VALUES ({id}, '{ban_id}')")
+        self.db_cursor.execute(f"INSERT INTO bans VALUES ({id}, '{ban_id}')")
 
-    def addTag(self, id, tags):
+    @exception
+    def addTag(self, id, tag):
         #DBにtag追加
-        self.db_cursor.execute(f"INSERT INTO tags VALUES ({id}, '{tags}')")
+        self.db_cursor.execute(f"INSERT INTO tags VALUES ({id}, '{tag}')")
 
-    def deleteTags(self, id, tags):
-        self.db_cursor.execute(f"INSERT INTO tags VALUES ({id}, '{tags}')")
+    @exception
+    def deleteGuild(self, id):
+        self.db_cursor.execute(f"DELETE FROM guilds where id={id}")
 
+    @exception
+    def deleteBan(self, id, ban_id):
+        self.db_cursor.execute(f"DELETE FROM bans where id={id} and ban_id={ban_id}")
 
-    def showHashTags():
-        self.db_cursor.execute('SELECT distinct name FROM tags')
-        return db_cursor.fetchall()
+    @exception
+    def deleteTag(self, id, tag):
+        self.db_cursor.execute(f"DELETE FROM tags where id={id} and name='{tag}'")
+
+    @exception
+    def showGuilds(self):
+        self.db_cursor.execute('SELECT distinct * FROM guilds')
+        return self.db_cursor.fetchall()
+
+    @exception
+    def showBans(self):
+        self.db_cursor.execute('SELECT distinct * FROM bans')
+        return self.db_cursor.fetchall()
+
+    @exception
+    def showHashTags(self):
+        self.db_cursor.execute('SELECT distinct * FROM tags')
+        return self.db_cursor.fetchall()

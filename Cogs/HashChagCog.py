@@ -27,25 +27,39 @@ class HashChagCog(commands.Cog):
             await ctx.send("サブコマンドがない->一覧出してあげよう")
 
     @hshg.command()
-    async def add(self, ctx, tags):
+    async def add(self, ctx, tag):
         category = getHashChagCategory(ctx.guild.categories)
 
         for channel in category.channels:
-            if tags.lower() == channel.name.lower():
+            if tag.lower() == channel.name.lower():
                 await ctx.send("もうタグは登録してあるにゃ～")
                 return
 
-        connectdb().addTag(int(ctx.guild.id), tags)
-        await ctx.guild.create_text_channel(name=tags, category=category)
+        connectdb().addTag(int(ctx.guild.id), tag.lower())
+        await ctx.guild.create_text_channel(name=tag, category=category)
 
     @hshg.command()
-    async def delete(self, ctx):
-        # TODO DBにguild: tagsを削除
-        await ctx.send("ハッシュタグ削除")
+    async def delete(self, ctx, tag):
+        category = getHashChagCategory(ctx.guild.categories)
+
+        for channel in category.channels:
+            if tag.lower() == channel.name.lower():
+                connectdb().deleteTag(int(ctx.guild.id), tag.lower())
+                await channel.delete()
+                return
+
+        await ctx.send("その名前のタグはないにゃ～")
 
     @hshg.command()
     async def show(self, ctx):
         await ctx.send("ハッシュタグ一覧")
+
+    @hshg.command()
+    async def shows(self, ctx):
+        print(connectdb().showHashTags())
+        print(connectdb().showGuilds())
+        print(connectdb().showBans())
+        await ctx.send("hoi")
 
     @hshg.command()
     async def gshow(self, ctx):
@@ -53,6 +67,14 @@ class HashChagCog(commands.Cog):
 
     @hshg.command()
     async def ban(self, ctx, id):
+        await ctx.send("ハッシュタグ一覧")
+
+    @hshg.command()
+    async def unban(self, ctx, id):
+        await ctx.send("ハッシュタグ一覧")
+
+    @hshg.command()
+    async def showban(self, ctx, id):
         await ctx.send("ハッシュタグ一覧")
 
 
