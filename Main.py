@@ -1,5 +1,6 @@
 from discord.ext import commands
 from Util import *
+from Databases.Sqlite3 import *
 import traceback
 import Constant
 import Settings
@@ -29,6 +30,9 @@ class Main(commands.Bot):
 
     async def on_guild_join(self, guild):
         print(type(guild))
+        print(guild.id)
+        print(guild.name)
+        connectdb().addGuild(int(guild.id), str(guild.name))
         await guild.create_category(name=Constant.APP_NAME)
         #if (True):
         #   await guild.create_category(name="HashChag")

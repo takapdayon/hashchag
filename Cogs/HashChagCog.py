@@ -1,7 +1,7 @@
 from discord.ext import commands
 from Util import *
 from Databases.Sqlite3 import *
-from Databases.Sqlite3 import *
+from Databases.HerokuDB import *
 import discord
 import Constant
 
@@ -10,11 +10,12 @@ class HashChagCog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        """
         if True:
             self.db = Sqlite3()
             print(type(self.db))
         else:
-            self.db = Heroku()
+            self.db = Heroku()"""
 
     @commands.command()
     async def me(self, ctx):
@@ -30,11 +31,11 @@ class HashChagCog(commands.Cog):
         category = getHashChagCategory(ctx.guild.categories)
 
         for channel in category.channels:
-            if tags == channel.name:
+            if tags.lower() == channel.name.lower():
                 await ctx.send("もうタグは登録してあるにゃ～")
                 return
-        # TODO DBにguild: tagsで登録する
-        self.db.addTag(int(ctx.guild.id), tags)
+
+        connectdb().addTag(int(ctx.guild.id), tags)
         await ctx.guild.create_text_channel(name=tags, category=category)
 
     @hshg.command()

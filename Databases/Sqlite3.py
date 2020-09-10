@@ -31,35 +31,24 @@ class Sqlite3():
         except sqlite3.Error as e:
             print(e.args[0])
 
-    # DBのcommit, closeの凸凸
-    def deco(func):
-        def wrapper(*args, **kwargs):
-            try:
-                func(*args, **kwargs)
-                self.db.commit()
-                self.db.close()
-            except sqlite3.Error as e:
-                print(e.args[0])
-        return wrapper
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.dbcommit()
+        self.db.connection.close()
 
-    @deco
     def addGuild(self, id, name):
         #DBにguild追加
-        self.db_cursor.execute(f"INSERT INTO tags VALUES ({id}, {name})")
+        self.db_cursor.execute(f"INSERT INTO tags VALUES ({id}, '{name}')")
 
-    @deco
     def addban(self, id, ban_id):
         #DBにguild指定のBANguild追加
-        self.db_cursor.execute(f"INSERT INTO tags VALUES ({id}, {ban_id})")
+        self.db_cursor.execute(f"INSERT INTO tags VALUES ({id}, '{ban_id}')")
 
-    @deco
     def addTag(self, id, tags):
         #DBにtag追加
-        self.db_cursor.execute(f"INSERT INTO tags VALUES ({id}, {tags})")
+        self.db_cursor.execute(f"INSERT INTO tags VALUES ({id}, '{tags}')")
 
-    @deco
     def deleteTags(self, id, tags):
-        self.db_cursor.execute(f"INSERT INTO tags VALUES ({id}, {tags})")
+        self.db_cursor.execute(f"INSERT INTO tags VALUES ({id}, '{tags}')")
 
 
     def showHashTags():

@@ -1,5 +1,12 @@
 import discord
 import Constant
+from Databases.Sqlite3 import *
+
+def connectdb():
+    if True:
+        return Sqlite3()
+    else:
+        return Heroku()
 
 def deleteCategory():
     print("カテゴリ削除")
