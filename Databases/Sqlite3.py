@@ -87,3 +87,8 @@ class Sqlite3():
     def showHashTags(self):
         self.db_cursor.execute('SELECT distinct * FROM tags')
         return self.db_cursor.fetchall()
+
+    @exception
+    def showTags(self):
+        self.db_cursor.execute('SELECT name FROM tags group by name')
+        return self.db_cursor.fetchall()

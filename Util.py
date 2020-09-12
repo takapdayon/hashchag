@@ -8,6 +8,16 @@ def connectdb():
     else:
         return Heroku()
 
+
+def changeTagListToStr(taglist):
+    str_tags = ""
+
+    # forで回さずにjoinとかでできるならそっちに～
+    for tag in taglist:
+        str_tags += str(*tag) + "\n"
+
+    return str_tags
+
 def deleteCategory():
     print("カテゴリ削除")
 

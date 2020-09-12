@@ -10,12 +10,6 @@ class HashChagCog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        """
-        if True:
-            self.db = Sqlite3()
-            print(type(self.db))
-        else:
-            self.db = Heroku()"""
 
     @commands.command()
     async def me(self, ctx):
@@ -52,7 +46,8 @@ class HashChagCog(commands.Cog):
 
     @hshg.command()
     async def show(self, ctx):
-        await ctx.send("ハッシュタグ一覧")
+        tags = connectdb().showTags()
+        await ctx.send(changeTagListToStr(tags))
 
     @hshg.command()
     async def shows(self, ctx):
@@ -62,17 +57,16 @@ class HashChagCog(commands.Cog):
         await ctx.send("hoi")
 
     @hshg.command()
-    async def gshow(self, ctx):
-        await ctx.send("登録ハッシュタグ一覧")
-
-    @hshg.command()
     async def ban(self, ctx, id):
-        await ctx.send("ハッシュタグ一覧")
+        connectdb().addBan(ctx.guild.id, id)
+        await ctx.send(f"{id}をBan登録したにゃ～")
 
     @hshg.command()
     async def unban(self, ctx, id):
-        await ctx.send("ハッシュタグ一覧")
+        connectdb().deleteBan(ctx.guild.id, id)
+        await ctx.send(f"{id}をBan解除したにゃ～")
 
+    # TODO IDでしかみれないし...いる?サーバ名もBAN時に登録するようにするかどっちかやなぁ...
     @hshg.command()
     async def showban(self, ctx, id):
         await ctx.send("ハッシュタグ一覧")
