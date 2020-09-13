@@ -11,6 +11,35 @@ class HashChagCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        connectdb().addGuild(int(guild.id), str(guild.name))
+
+
+        category = getHashChagCategory(guild.categories)
+        if category is not None:
+            # TODO webHookを削除する
+            [await channel.delete() for channel in category.channels]
+
+    @commands.Cog.listener()
+    async def on_guild_remove(self, guild):
+        # TODO webhook, channel, categoryを削除
+        category = getHashChagCategory(guild.categories)
+
+        connectdb().deleteGuild(guild.id)
+        return
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author.bot:
+            return
+        if message.channel.category.name.lower() != Constant.APP_NAME.lower():
+            return
+        if message.content[:2] == "#!":
+            return
+        print(message.content)
+        await message.delete()
+
     @commands.command()
     async def me(self, ctx):
         await ctx.send('me表示')
@@ -26,10 +55,12 @@ class HashChagCog(commands.Cog):
 
         for channel in category.channels:
             if tag.lower() == channel.name.lower():
-                await ctx.send("もうタグは登録してあるにゃ～")
+                await ctx.send(f"もう{tag.lower()}は登録してあるにゃ～")
                 return
 
+        # TODO webHookも追加する
         connectdb().addTag(int(ctx.guild.id), tag.lower())
+        await ctx.send(f"タグ{tag.lower()}を登録したにゃ～")
         await ctx.guild.create_text_channel(name=tag, category=category)
 
     @hshg.command()
@@ -38,11 +69,13 @@ class HashChagCog(commands.Cog):
 
         for channel in category.channels:
             if tag.lower() == channel.name.lower():
+                # TODO webHookも削除する
                 connectdb().deleteTag(int(ctx.guild.id), tag.lower())
+                await ctx.send(f"タグ{tag.lower()}を削除したにゃ～")
                 await channel.delete()
                 return
 
-        await ctx.send("その名前のタグはないにゃ～")
+        await ctx.send(f"{tag.lower()}のタグはそもそもないにゃ～")
 
     @hshg.command()
     async def show(self, ctx):

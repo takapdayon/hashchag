@@ -28,13 +28,6 @@ class Main(commands.Bot):
         print(self.user.id)
         print('-----')
 
-    async def on_guild_join(self, guild):
-        connectdb().addGuild(int(guild.id), str(guild.name))
-        await guild.create_category(name=Constant.APP_NAME)
-
-    async def on_guild_remove(self, guild):
-        print("category削除")
-        await guild.create_category(name=Constant.APP_NAME)
 
 if __name__ == '__main__':
     bot = Main(command_prefix='#!')
