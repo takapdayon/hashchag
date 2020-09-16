@@ -13,19 +13,22 @@ class HashChagCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        connectdb().addGuild(int(guild.id), str(guild.name))
-
+        try:
+            connectdb().addGuild(int(guild.id), str(guild.name))
+        except Exception as e:
+            return
 
         category = getHashChagCategory(guild.categories)
         if category is not None:
             # TODO webHookを削除する
             [await channel.delete() for channel in category.channels]
+            return
+
+        await guild.create_category(name=Constant.APP_NAME)
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
-        # TODO webhook, channel, categoryを削除
         category = getHashChagCategory(guild.categories)
-
         connectdb().deleteGuild(guild.id)
         return
 
@@ -37,8 +40,32 @@ class HashChagCog(commands.Cog):
             return
         if message.content[:2] == "#!":
             return
-        print(message.content)
+
+        channels = self.bot.get_all_channels()
         await message.delete()
+        print(message)
+
+        # 発言サーバをBANしているサーバ取得
+        banlist = connectdb().getBans(message.author.id)
+
+        # webhook対象サーバ一覧を取得
+        global_channels = [channel for channel in channels if channel.name == message.channel.name and \
+                                                              str(channel.type) == "text" and \
+                                                              channel.category.name.lower() == Constant.APP_NAME.lower()]
+
+        for channel in global_channels:
+            ch_webhooks = await channel.webhooks()
+            webhook = discord.utils.get(ch_webhooks, name=message.channel.name)
+
+            if webhook is None:
+                continue
+            await webhook.send(content=message.content,
+                # サーバ表示にするかユーザ表示にするか悩む...一応サーバで表示します...
+                # サーバとのつながりを意識したいから...
+                username=f"{message.guild.name} {message.guild.id}",
+                avatar_url=message.guild.icon_url_as(format="png"))
+                #username=f"{message.author.name} {message.author.id}",
+                #avatar_url=message.author.avatar_url_as(format="png"))
 
     @commands.command()
     async def me(self, ctx):
@@ -52,42 +79,46 @@ class HashChagCog(commands.Cog):
     @hshg.command()
     async def add(self, ctx, tag):
         category = getHashChagCategory(ctx.guild.categories)
+        tagl = tag.lower()
+
+        if category is None:
+            await ctx.send("hashchagカテゴリーがないにゃ～一回僕を追い出して再度入れてにゃ～")
+            return
 
         for channel in category.channels:
-            if tag.lower() == channel.name.lower():
-                await ctx.send(f"もう{tag.lower()}は登録してあるにゃ～")
+            if tagl == channel.name.lower():
+                await ctx.send(f"もう{tagl}は登録してあるにゃ～")
                 return
 
-        # TODO webHookも追加する
-        connectdb().addTag(int(ctx.guild.id), tag.lower())
-        await ctx.send(f"タグ{tag.lower()}を登録したにゃ～")
-        await ctx.guild.create_text_channel(name=tag, category=category)
+        tag_channel = await ctx.guild.create_text_channel(name=tagl, category=category)
+        await tag_channel.create_webhook(name=tagl)
+        await ctx.send(f"タグ{tagl}を登録したにゃ～")
 
     @hshg.command()
     async def delete(self, ctx, tag):
         category = getHashChagCategory(ctx.guild.categories)
+        tagl = tag.lower()
 
         for channel in category.channels:
-            if tag.lower() == channel.name.lower():
-                # TODO webHookも削除する
-                connectdb().deleteTag(int(ctx.guild.id), tag.lower())
-                await ctx.send(f"タグ{tag.lower()}を削除したにゃ～")
+            if tagl == channel.name.lower():
                 await channel.delete()
+                await ctx.send(f"タグ{tagl}を削除したにゃ～")
                 return
 
-        await ctx.send(f"{tag.lower()}のタグはそもそもないにゃ～")
+        await ctx.send(f"{tagl}のタグはそもそもないにゃ～")
 
     @hshg.command()
     async def show(self, ctx):
-        tags = connectdb().showTags()
-        await ctx.send(changeTagListToStr(tags))
+        tags = ""
 
-    @hshg.command()
-    async def shows(self, ctx):
-        print(connectdb().showHashTags())
-        print(connectdb().showGuilds())
-        print(connectdb().showBans())
-        await ctx.send("hoi")
+        channels = self.bot.get_all_channels()
+        tag_channels = [channel for channel in channels if channel.category.name == Constant.APP_NAME.lower()]
+        tag
+
+        for channel in global_channels:
+            tags += f"{channel.name}\n"
+
+        await ctx.send(tags)
 
     @hshg.command()
     async def ban(self, ctx, id):
@@ -103,7 +134,6 @@ class HashChagCog(commands.Cog):
     @hshg.command()
     async def showban(self, ctx, id):
         await ctx.send("ハッシュタグ一覧")
-
 
 def setup(bot):
     bot.add_cog(HashChagCog(bot))

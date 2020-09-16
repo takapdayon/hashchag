@@ -17,17 +17,10 @@ class Sqlite3():
                 name TEXT)
             """)
             self.db_cursor.execute("""
-            CREATE TABLE IF NOT EXISTS bans (
+            CREATE TABLE IF NOT EXISTS tags (
                 id INTEGER,
                 ban_id INTEGER,
                 PRIMARY KEY(id, ban_id),
-                foreign key (id) references guilds(id))
-            """)
-            self.db_cursor.execute("""
-            CREATE TABLE IF NOT EXISTS tags (
-                id INTEGER,
-                name TEXT,
-                PRIMARY KEY(id, name),
                 foreign key (id) references guilds(id))
             """)
         except sqlite3.Error as e:
@@ -57,11 +50,6 @@ class Sqlite3():
         self.db_cursor.execute(f"INSERT INTO bans VALUES ({id}, '{ban_id}')")
 
     @exception
-    def addTag(self, id, tag):
-        #DBにtag追加
-        self.db_cursor.execute(f"INSERT INTO tags VALUES ({id}, '{tag}')")
-
-    @exception
     def deleteGuild(self, id):
         self.db_cursor.execute(f"DELETE FROM guilds where id={id}")
 
@@ -70,22 +58,13 @@ class Sqlite3():
         self.db_cursor.execute(f"DELETE FROM bans where id={id} and ban_id={ban_id}")
 
     @exception
-    def deleteTag(self, id, tag):
-        self.db_cursor.execute(f"DELETE FROM tags where id={id} and name='{tag}'")
-
-    @exception
-    def showGuilds(self):
+    def getGuilds(self):
         self.db_cursor.execute('SELECT distinct * FROM guilds')
         return self.db_cursor.fetchall()
 
     @exception
-    def showBans(self):
-        self.db_cursor.execute('SELECT distinct * FROM bans')
-        return self.db_cursor.fetchall()
-
-    @exception
-    def showHashTags(self):
-        self.db_cursor.execute('SELECT distinct * FROM tags')
+    def getBans(self, id):
+        self.db_cursor.execute(f"SELECT distinct id FROM bans where ban_id={id}")
         return self.db_cursor.fetchall()
 
     @exception
