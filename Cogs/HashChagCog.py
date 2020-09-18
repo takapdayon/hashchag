@@ -40,10 +40,11 @@ class HashChagCog(commands.Cog):
             return
         if message.content[:2] == "#!":
             return
+        if message.guild.member_count > 5:
+            return
 
         channels = self.bot.get_all_channels()
         await message.delete()
-        print(message)
 
         # 発言サーバをBANしているサーバ取得
         banlist = connectdb().getBans(message.author.id)
