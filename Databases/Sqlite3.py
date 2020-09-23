@@ -17,7 +17,7 @@ class Sqlite3():
                 name TEXT)
             """)
             self.db_cursor.execute("""
-            CREATE TABLE IF NOT EXISTS tags (
+            CREATE TABLE IF NOT EXISTS bans (
                 id INTEGER,
                 ban_id INTEGER,
                 PRIMARY KEY(id, ban_id),
@@ -64,10 +64,10 @@ class Sqlite3():
 
     @exception
     def getBans(self, id):
-        self.db_cursor.execute(f"SELECT distinct id FROM bans where ban_id={id}")
+        self.db_cursor.execute(f"SELECT bans.ban_id, guilds.name FROM bans INNER JOIN guilds on guilds.id = bans.ban_id WHERE bans.id={id}")
         return self.db_cursor.fetchall()
 
     @exception
-    def showTags(self):
-        self.db_cursor.execute('SELECT name FROM tags group by name')
+    def getbanList(self, id):
+        self.db_cursor.execute(f"SELECT id FROM bans WHERE ban_id={id}")
         return self.db_cursor.fetchall()
