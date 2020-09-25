@@ -1,5 +1,6 @@
 # HashChag
 サーバを超えて、好きなことでチャットしよう!
+きになったタグを登録すれば、あとはそこのチャットがグローバルに！
 使い方は簡単。BOTを導入して気になるハッシュチャグを登録するだけ
 あとはみんなとチャットしよう!
 
@@ -9,52 +10,22 @@
 [HashChag](https://discord.com/oauth2/authorize?client_id=748168336302407740&permissions=536880144&scope=bot)
 
 # Usage
+## 使い方youtubeに
 
 ## #!hshg add タグ名
+hashchagカテゴリー内にタグ名チャンネルを追加するよ
+
 ## #!hshg delete タグ名
+hashchagカテゴリー内のタグ名チャンネルを削除するよ
+
 ## #!hshg list
+みんながなんのタグを登録しているか見れるよ
+
 ## #!hshg ban ID名
+鯖をBANできるよ、BANした鯖からはチャットが届かなくなるよ
+
 ## #!hshg unban ID名
+BANを解除するよ～ん
+
 ## #!hshg banlist
-
-## !!cus
-上記にlaneをつけて分けます。
-#### DEMO
-```
-!!cus
-
--チーム1------------------------------
-Top: Player1
-Jg: Player7
-Mid: Player5
-Adc: Player3
-Sup: Player9
--チーム2------------------------------
-Top: Player2
-Jg: Player4
-Mid: Player6
-Adc: Player8
-Sup: Player10
-```
-
-
-## !!!cus
-上記にchampもつけます。
-#### DEMO
-
-```
-!!!cus
-
--チーム1------------------------------
-Top: Kled Player1
-Jg: Gragas Player7
-Mid: Brand Player5
-Adc: Soraka Player3
-Sup: Kaisa Player9
--チーム2------------------------------
-Top: Orianna Player2
-Jg: Janna Player4
-Mid: Shen Player6
-Adc: Blitzcrank Player8
-Sup: Talon Player10
-```
+BANした鯖一覧がみれるよ
