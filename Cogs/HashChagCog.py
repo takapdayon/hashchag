@@ -14,10 +14,7 @@ class HashChagCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        try:
-            connectdb().addGuild(int(guild.id), str(guild.name))
-        except Exception as e:
-            return
+        connectdb().addGuild(int(guild.id), str(guild.name))
 
         category = getHashChagCategory(guild.categories)
         if category is not None:
@@ -46,9 +43,10 @@ class HashChagCog(commands.Cog):
         ## TODO webhookがないならreturn
         if message.content.startswith("#!"):
             return
+        """
         if message.guild.member_count <= 5:
             await message.channel.send("鯖人数が5人未満だと使えないにゃ～")
-            return
+            return"""
 
         channels = self.bot.get_all_channels()
         await message.delete()

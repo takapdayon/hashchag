@@ -6,11 +6,10 @@
 
 # install
 こちらからどうぞ<br>
-(アイコンは自作しました。頑張りました!)<br>
-[HashChag](https://discord.com/oauth2/authorize?client_id=748168336302407740&permissions=536880144&scope=bot)
+(アイコンは自作しました。多分ここ一番頑張りました!)<br>
+[HashChag]
 
 # Usage
-## 使い方youtubeに
 
 ## #!hshg add タグ名
 hashchagカテゴリー内にタグ名チャンネルを追加するよ
