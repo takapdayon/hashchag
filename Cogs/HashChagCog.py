@@ -105,13 +105,18 @@ class HashChagCog(commands.Cog):
         await ctx.send(f"タグ{tagl}を登録したにゃ～")
 
     @hshg.command()
-    async def delete(self, ctx, tag):
+    async def delete(self, ctx, tag=None):
         category = getHashChagCategory(ctx.guild.categories)
-        tagl = tag.lower()
 
         if category is None:
             await ctx.send("hashchagカテゴリーがないにゃ～一回僕を追い出して再度入れてにゃ～")
             return
+
+        if tag is None:
+            await ctx.send("削除タグ名がないにゃ～")
+            return
+
+        tagl = tag.lower()
 
         for channel in category.channels:
             if tagl == channel.name.lower():
@@ -122,8 +127,8 @@ class HashChagCog(commands.Cog):
         await ctx.send(f"{tagl}のタグはそもそもないにゃ～")
 
     ## TODO いづれ部分検索で引っ掛けて持ってこれるように
-    @hshg.command()
-    async def list(self, ctx):
+    @hshg.command(name='list')
+    async def _list(self, ctx):
         tags = ""
 
         channels = self.bot.get_all_channels()
@@ -148,12 +153,12 @@ class HashChagCog(commands.Cog):
         await ctx.send(f"{id}をBan解除したにゃ～")
 
     @hshg.command()
-    async def showban(self, ctx):
+    async def banlist(self, ctx):
         name_and_banid = connectdb().getBans(ctx.guild.id)
         tags = ""
 
         if not name_and_banid:
-            await ctx.send("ban鯖はないにゃ～")
+            await ctx.send("banした鯖はないにゃ～")
             return
 
         for name, banid in name_and_banid:

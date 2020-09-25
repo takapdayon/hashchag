@@ -10,24 +10,12 @@
 
 # Usage
 
-## #!hgh
-#### DEMO
-```
-!cus
-
--チーム1------------------------------
-Player1
-Player7
-Player5
-Player3
-Player9
--チーム2------------------------------
-Player2
-Player4
-Player6
-Player8
-Player10
-```
+## #!hshg add タグ名
+## #!hshg delete タグ名
+## #!hshg list
+## #!hshg ban ID名
+## #!hshg unban ID名
+## #!hshg banlist
 
 ## !!cus
 上記にlaneをつけて分けます。
