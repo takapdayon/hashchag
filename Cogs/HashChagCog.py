@@ -121,9 +121,9 @@ class HashChagCog(commands.Cog):
 
         await ctx.send(f"{tagl}のタグはそもそもないにゃ～")
 
-    ## いづれ部分検索で引っ掛けて持ってこれるように
+    ## TODO いづれ部分検索で引っ掛けて持ってこれるように
     @hshg.command()
-    async def show(self, ctx):
+    async def list(self, ctx):
         tags = ""
 
         channels = self.bot.get_all_channels()
@@ -147,7 +147,6 @@ class HashChagCog(commands.Cog):
         connectdb().deleteBan(ctx.guild.id, id)
         await ctx.send(f"{id}をBan解除したにゃ～")
 
-    # TODO IDでしかみれないし...いる?サーバ名もBAN時に登録するようにするかどっちかやなぁ...
     @hshg.command()
     async def showban(self, ctx):
         name_and_banid = connectdb().getBans(ctx.guild.id)
